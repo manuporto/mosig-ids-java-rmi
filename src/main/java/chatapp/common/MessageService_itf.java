@@ -2,10 +2,7 @@ package chatapp.common;
 
 public interface MessageService_itf {
     
-   public String sendMessage(ClientInfo_itf name, String message);
+   void sendMessage(ClientInfo_itf src, ClientInfo_itf dest, String message);
            
-           
-   public String sendBroadcastMessage(String message);
-           
-    
+   void sendBroadcastMessage(ClientInfo_itf src, String message);
 }
