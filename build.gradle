@@ -28,5 +28,16 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+task runServer(type: JavaExec) {
+    main = 'chatapp.server.Server'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runClient(type: JavaExec) {
+    main = 'chatapp.client.Client'
+    classpath = sourceSets.main.runtimeClasspath
+    args 'localhost'
+}
+
 // Define the main class for the application
-mainClassName = 'chatapp.App'
+mainClassName = 'chatapp.server.Server'

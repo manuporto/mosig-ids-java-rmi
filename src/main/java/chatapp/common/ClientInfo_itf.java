@@ -1,5 +1,8 @@
 package chatapp.common;
 
-public interface ClientInfo_itf {
-    String getUsername();
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface ClientInfo_itf extends Remote {
+    String getUsername() throws RemoteException;
 }
