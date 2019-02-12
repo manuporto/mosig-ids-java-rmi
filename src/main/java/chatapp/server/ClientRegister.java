@@ -22,4 +22,8 @@ public class ClientRegister implements AccessServiceItf {
     public void leave(ClientInfo_itf client) throws RemoteException {
         clients.remove(client);
     }
+
+    public Iterable<ClientInfo_itf> getClients() {
+        return clients.keySet();
+    }
 }

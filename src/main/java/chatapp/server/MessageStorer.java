@@ -10,6 +10,7 @@ public class MessageStorer implements Runnable {
 
     MessageStorer(BlockingQueue<Message> receivedMessages) {
         this.receivedMessages = receivedMessages;
+        messages = new LinkedList<>();
     }
 
     @Override
