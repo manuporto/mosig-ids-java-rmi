@@ -15,4 +15,9 @@ public class ClientInfo implements ClientInfo_itf, Serializable {
     public String getUsername() throws RemoteException {
         return userName;
     }
+
+    @Override
+    public void receiveMessage(String message) throws RemoteException {
+        System.out.println(message);
+    }
 }
