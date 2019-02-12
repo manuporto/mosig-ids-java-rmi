@@ -39,5 +39,6 @@ task runClient(type: JavaExec) {
     args 'localhost'
 }
 
+
 // Define the main class for the application
 mainClassName = 'chatapp.server.Server'

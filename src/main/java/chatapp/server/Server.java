@@ -1,28 +1,34 @@
 package chatapp.server;
 
-import chatapp.common.MessageService_itf;
-
+import chatapp.client.Client_interface;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
-public class Server {
+public class Server extends UnicastRemoteObject implements Server_interface{
+    private static final long serialVersionUID = 1L;
+    private ArrayList<Client_interface>listClients ;
+    protected Server() throws RemoteException {
+        listClients = new ArrayList<Client_interface>();
+    }
+    public static void main(String[] args) throws RemoteException, MalformedURLException {
+        Naming.rebind("RMIServer",new Server());
+    }
 
-    public static void main(String[] args) {
-        try {
-            // Create a Hello remote object
-            MessageService_impl msgSv = new MessageService_impl();
-            MessageService_itf msg_stub = (MessageService_itf) UnicastRemoteObject.exportObject(msgSv, 0);
+    @Override
+    public synchronized void registerClient(Client_interface client) throws RemoteException {
+        this.listClients.add(client);
+    }
 
-            // Register the remote object in RMI registry with a given identifier
-            Registry registry= LocateRegistry.createRegistry(1099);
-            registry.bind("MessageService", msg_stub);
-
-            System.out.println ("Server ready");
-
-        } catch (Exception e) {
-            System.err.println("Error on server :" + e) ;
-            e.printStackTrace();
+    @Override
+    public synchronized void broadcastMessage(String message) throws RemoteException {
+        int i=0;
+        while (i<listClients.size()){
+            listClients.get(i++).retrieveMessage(message);
         }
     }
 }
