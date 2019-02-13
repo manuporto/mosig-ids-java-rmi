@@ -22,14 +22,13 @@ public class MessageService_impl implements MessageService_itf {
     public void sendMessage(ClientInfo_itf src, ClientInfo_itf dest, String message) throws RemoteException {}
 
     @Override
-    public void sendBroadcastMessage(ClientInfo_itf src, String message) throws RemoteException {
+    public synchronized void sendBroadcastMessage(ClientInfo_itf src, String message) throws RemoteException {
         Message msg = new Message(new Date(), src.getUsername(), message);
         // receivedMessages.put(msg);
         Iterable<ClientInfo_itf> clients = cRegister.getClients();
         for (ClientInfo_itf client : clients) {
             client.receiveMessage(msg.toString());
         }
-        System.out.println(src.getUsername() + ": " +  message);
     }
 
     @Override
