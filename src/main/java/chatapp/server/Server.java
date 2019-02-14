@@ -1,5 +1,6 @@
 package chatapp.server;
 
+import chatapp.common.AccessServiceItf;
 import chatapp.common.MessageService_itf;
 
 import java.rmi.registry.LocateRegistry;
@@ -12,15 +13,17 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            // Create a Hello remote object
+            // Create remote objects
             BlockingQueue<Message> receivedMesages = new LinkedBlockingQueue<>();
             ClientRegister cRegister = new ClientRegister();
+            AccessServiceItf cRegisterStub = (AccessServiceItf) UnicastRemoteObject.exportObject(cRegister, 0);
             MessageService_impl msgSv = new MessageService_impl(receivedMesages, cRegister);
-            MessageService_itf msg_stub = (MessageService_itf) UnicastRemoteObject.exportObject(msgSv, 0);
+            MessageService_itf msgStub = (MessageService_itf) UnicastRemoteObject.exportObject(msgSv, 0);
 
-            // Register the remote object in RMI registry with a given identifier
+            // Register the remote objects in RMI registry with a given identifier
             Registry registry= LocateRegistry.createRegistry(1099);
-            registry.bind("MessageService", msg_stub);
+            registry.bind("MessageService", msgStub);
+            registry.bind("AccessService", cRegisterStub);
 
             System.out.println ("Server ready");
 
