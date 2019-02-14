@@ -7,6 +7,8 @@ import chatapp.common.MessageService_itf;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Client {
@@ -27,7 +29,7 @@ public class Client {
             Scanner scanner = new Scanner(System.in);
             String username = scanner.nextLine();
             while (!accessService.userNameAvailable(username)) {
-                System.out.println("Username already taken, pleas choose another one.");
+                System.out.println("Username already taken, please choose another one.");
                 username = scanner.nextLine();
             }
             ClientInfo_itf clientInfo = new ClientInfo(username);
@@ -37,8 +39,26 @@ public class Client {
             System.out.println("Type the message below. For exit type /exit");
             String message = scanner.nextLine();
             while (!message.equals("/exit")) {
-                // TODO add switch case to differentiate between different user actions
-                msgSrvc.sendBroadcastMessage(clientInfo, message);
+                List<String> command = Arrays.asList(message.split(" "));
+                switch (command.get(0)) {
+                    case "/msg":
+                        msgSrvc.sendMessage(clientInfo.getUsername(), command.get(1), command.get(2));
+                        break;
+                    case "/bmsg":
+                        msgSrvc.sendBroadcastMessage(clientInfo.getUsername(), command.get(1));
+                        break;
+                    case "/clients":
+                        Iterable<String> clients = msgSrvc.getClients();
+                        System.out.println("Connected clients: ");
+                        for (String client : clients) System.out.println(client);
+                        break;
+                    case "/history":
+                        System.out.println("Not implemented!");
+                        break;
+                    default:
+                        System.out.println("Command not recognized.");
+                        System.out.println("List of comannds....");
+                }
                 message = scanner.nextLine();
             }
 

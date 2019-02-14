@@ -32,4 +32,12 @@ public class ClientRegister implements AccessServiceItf {
     public Iterable<ClientInfo_itf> getClients() {
         return clients.values();
     }
+
+    public Iterable<String> getUsernames() {
+        return clients.keySet();
+    }
+
+    public ClientInfo_itf getClient(String name) {
+        return clients.get(name);
+    }
 }

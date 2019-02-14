@@ -2,13 +2,15 @@ package chatapp.common;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface MessageService_itf  extends Remote {
-    
-   void sendMessage(ClientInfo_itf src, ClientInfo_itf dest, String message) throws RemoteException;
-           
-   void sendBroadcastMessage(ClientInfo_itf src, String message) throws RemoteException;
 
-    List<String> receiveMessages() throws RemoteException;
+    void sendMessage(String senderUsername, String receiverUserName, String message) throws RemoteException;
+
+    void sendBroadcastMessage(String senderUsername, String message) throws RemoteException;
+
+    ArrayList<String> receiveMessages() throws RemoteException;
+
+    ArrayList<String> getClients() throws RemoteException;
 }

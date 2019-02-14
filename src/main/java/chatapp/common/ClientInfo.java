@@ -1,13 +1,13 @@
 package chatapp.common;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
-public class ClientInfo implements ClientInfo_itf, Serializable {
-    private static final long serialversionUID = 129348938L;
+public class ClientInfo extends UnicastRemoteObject implements ClientInfo_itf {
     String userName;
 
-    public ClientInfo(String userName) {
+    public ClientInfo(String userName) throws RemoteException {
+        super();
         this.userName = userName;
     }
 
