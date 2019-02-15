@@ -1,4 +1,6 @@
-package chatapp.common;
+package chatapp.client;
+
+import chatapp.common.ClientInfo_itf;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
