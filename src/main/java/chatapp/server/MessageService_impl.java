@@ -2,7 +2,6 @@ package chatapp.server;
 
 import chatapp.common.ClientInfo_itf;
 import chatapp.common.MessageService_itf;
-import java.io.IOException;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -24,23 +23,16 @@ public class MessageService_impl implements MessageService_itf {
     @Override
     public void sendMessage(String senderUsername, String receiverUserName, String message) throws RemoteException {
         Message msg = new Message(new Date(), senderUsername, message);
+        ClientInfo_itf senderClient = cRegister.getClient(senderUsername);
         ClientInfo_itf receiverClient = cRegister.getClient(receiverUserName);
         if (receiverClient == null) return; // TODO raise exception
+        senderClient.receiveMessage(msg.toString());
         receiverClient.receiveMessage(msg.toString());
         try {
             receivedMessages.put(msg);
         } catch (InterruptedException ex) {
             Logger.getLogger(MessageService_impl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Thread t1 = null;
-        try {
-            t1 = new Thread(new MessageStorer(receivedMessages));
-        } catch (IOException ex) {
-            Logger.getLogger(MessageService_impl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(MessageService_impl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        t1.start();
     }
 
     @Override
@@ -51,15 +43,6 @@ public class MessageService_impl implements MessageService_itf {
         } catch (InterruptedException ex) {
             Logger.getLogger(MessageService_impl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Thread t1 = null;
-        try {
-            t1 = new Thread(new MessageStorer(receivedMessages));
-        } catch (IOException ex) {
-            Logger.getLogger(MessageService_impl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(MessageService_impl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        t1.start();
         Iterable<ClientInfo_itf> clients = cRegister.getClients();
         for (ClientInfo_itf client : clients) {
             client.receiveMessage(msg.toString());

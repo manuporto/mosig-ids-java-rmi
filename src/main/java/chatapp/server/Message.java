@@ -1,8 +1,9 @@
 package chatapp.server;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Message {
+public class Message implements Serializable {
     private Date timeStamp;
     private String author;
     private String msg;

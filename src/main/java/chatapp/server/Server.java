@@ -3,21 +3,24 @@ package chatapp.server;
 import chatapp.common.AccessServiceItf;
 import chatapp.common.MessageService_itf;
 
+import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
 
     public static void main(String[] args) {
         try {
             // Create remote objects
-            BlockingQueue<Message> receivedMesages = new LinkedBlockingQueue<>();
+            BlockingQueue<Message> receivedMessages = new LinkedBlockingQueue<>();
             ClientRegister cRegister = new ClientRegister();
             AccessServiceItf cRegisterStub = (AccessServiceItf) UnicastRemoteObject.exportObject(cRegister, 0);
-            MessageService_impl msgSv = new MessageService_impl(receivedMesages, cRegister);
+            MessageService_impl msgSv = new MessageService_impl(receivedMessages, cRegister);
             MessageService_itf msgStub = (MessageService_itf) UnicastRemoteObject.exportObject(msgSv, 0);
 
             // Register the remote objects in RMI registry with a given identifier
@@ -25,6 +28,14 @@ public class Server {
             registry.bind("MessageService", msgStub);
             registry.bind("AccessService", cRegisterStub);
 
+            // Run MessageStorer
+            Thread t1;
+            try {
+                t1 = new Thread(new MessageStorer(receivedMessages));
+                t1.start();
+            } catch (IOException ex) {
+                Logger.getLogger(MessageService_impl.class.getName()).log(Level.SEVERE, null, ex);
+            }
             System.out.println ("Server ready");
 
         } catch (Exception e) {
