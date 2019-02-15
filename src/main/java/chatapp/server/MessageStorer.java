@@ -1,6 +1,7 @@
 package chatapp.server;
 
 import java.io.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
@@ -13,20 +14,25 @@ public class MessageStorer implements Runnable {
     MessageStorer(BlockingQueue<Message> receivedMessages) throws IOException {
         loadMessages();
         this.receivedMessages = receivedMessages;
+        oldMessages = new LinkedList<>();
     }
 
     private void loadMessages() throws IOException {
         File file = new File("./history");
-        file.createNewFile();
-        FileInputStream fis = new FileInputStream(file);
-        try (fis; ObjectInputStream ois = new ObjectInputStream(fis)) {
-            Message msg;
-            while (fis.available() != 0) {
-                msg = (Message) ois.readObject();
-                oldMessages.add(msg);
+        if (!file.createNewFile()) {
+            FileInputStream fis = new FileInputStream(file);
+            try (fis; ObjectInputStream ois = new ObjectInputStream(fis)) {
+                Message msg;
+                while (fis.available() != 0) {
+                    msg = (Message) ois.readObject();
+                    oldMessages.add(msg);
+                }
+            } catch (EOFException e) {
+                Logger.getLogger(MessageStorer.class.getName()).log(Level.INFO, "History file empty");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                Logger.getLogger(MessageStorer.class.getName()).log(Level.SEVERE, e.toString(), e);
             }
-        } catch (ClassNotFoundException e) {
-            Logger.getLogger(MessageStorer.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 

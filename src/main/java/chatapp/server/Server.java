@@ -3,14 +3,11 @@ package chatapp.server;
 import chatapp.common.AccessServiceItf;
 import chatapp.common.MessageService_itf;
 
-import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Server {
 
@@ -30,13 +27,9 @@ public class Server {
 
             // Run MessageStorer
             Thread t1;
-            try {
-                t1 = new Thread(new MessageStorer(receivedMessages));
-                t1.start();
-            } catch (IOException ex) {
-                Logger.getLogger(MessageService_impl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            System.out.println ("Server ready");
+            t1 = new Thread(new MessageStorer(receivedMessages));
+            t1.start();
+            System.out.println("Server ready!!");
 
         } catch (Exception e) {
             System.err.println("Error on server :" + e) ;
