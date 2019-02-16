@@ -4,6 +4,7 @@ import chatapp.common.AccessServiceItf;
 import chatapp.common.ClientInfo_itf;
 import chatapp.common.MessageService_itf;
 
+import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -12,6 +13,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client {
     public static void main(String[] args) throws RemoteException, NotBoundException {
@@ -64,10 +67,15 @@ public class Client {
             message = scanner.nextLine();
         }
 
-        accessService.leave(clientInfo);
-        registry.unbind("AccessService");
-        registry.unbind("MessageService");
-        UnicastRemoteObject.unexportObject(clientInfo, true);
         scanner.close();
+        try {
+            accessService.leave(clientInfo);
+            registry.unbind("AccessService");
+            registry.unbind("MessageService");
+            UnicastRemoteObject.unexportObject(clientInfo, true);
+        } catch (ConnectException e) {
+            Logger.getLogger(Client.class.getName()).log(Level.INFO, "Server already closed");
+            System.exit(0);
+        }
     }
 }

@@ -12,9 +12,9 @@ public class MessageStorer implements Runnable {
     private List<Message> oldMessages;
 
     MessageStorer(BlockingQueue<Message> receivedMessages) throws IOException {
-        loadMessages();
-        this.receivedMessages = receivedMessages;
         oldMessages = new LinkedList<>();
+        this.receivedMessages = receivedMessages;
+        loadMessages();
     }
 
     private void loadMessages() throws IOException {
