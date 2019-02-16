@@ -82,7 +82,7 @@ public class ChatInterface {
     }
 
     private void handleHistoryRequest() throws RemoteException {
-        ArrayList<String> history = messageService.getMessageHistory();
+        ArrayList<String> history = messageService.getMessageHistory(clientName);
         for (String msg : history) System.out.println(msg);
     }
 }

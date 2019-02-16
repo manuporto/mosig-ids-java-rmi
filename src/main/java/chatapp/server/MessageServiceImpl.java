@@ -6,7 +6,6 @@ import chatapp.common.MessageServiceItf;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class MessageServiceImpl implements MessageServiceItf {
 
@@ -20,13 +19,13 @@ public class MessageServiceImpl implements MessageServiceItf {
 
     @Override
     public void sendMessage(String senderUsername, String receiverUserName, String message) throws RemoteException {
-        Message msg = new Message(new Date(), senderUsername, message);
+        DirectMessage msg = new DirectMessage(new Date(), senderUsername, receiverUserName, message);
         ClientInfoItf senderClient = cRegister.getClient(senderUsername);
         ClientInfoItf receiverClient = cRegister.getClient(receiverUserName);
         if (receiverClient == null) return; // TODO raise exception
         senderClient.receiveMessage(msg.toString());
         receiverClient.receiveMessage(msg.toString());
-        msgStorer.addMessage(msg);
+        msgStorer.addDirectMessage(msg);
     }
 
     @Override
@@ -40,10 +39,7 @@ public class MessageServiceImpl implements MessageServiceItf {
     }
 
     @Override
-    public ArrayList<String> getMessageHistory() throws RemoteException {
-        ArrayList<String> messages = new ArrayList<>();
-        List<Message> objMessages = msgStorer.getMessages();
-        for (Message msg : objMessages) messages.add(msg.toString());
-        return messages;
+    public ArrayList<String> getMessageHistory(String userName) throws RemoteException {
+        return (ArrayList<String>) msgStorer.getMessages(userName);
     }
 }
