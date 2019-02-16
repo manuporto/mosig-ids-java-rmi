@@ -1,6 +1,7 @@
 package chatapp.server;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -21,11 +22,16 @@ public class MessageStorer implements Runnable {
         File file = new File("./history");
         if (!file.createNewFile()) {
             FileInputStream fis = new FileInputStream(file);
-            try (fis; ObjectInputStream ois = new ObjectInputStream(fis)) {
+            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
                 Message msg;
                 while (fis.available() != 0) {
                     msg = (Message) ois.readObject();
                     oldMessages.add(msg);
+                }
+                for (Iterator<Message> it = oldMessages.iterator(); it.hasNext();) {
+                    Message message;
+                    message = it.next();
+                    System.out.println(message.toString());
                 }
             } catch (EOFException e) {
                 Logger.getLogger(MessageStorer.class.getName()).log(Level.INFO, "History file empty");
