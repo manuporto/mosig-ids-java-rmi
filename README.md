@@ -24,6 +24,8 @@ From the server side the only possible interaction if for closing it with the le
 
 ## Design
 
-The Chat application was based on two main programs, the server class and the client class. To communicate between these programs they were created two Java RMI remote objects. The first one, to access the service and the second one to send messages and receive. 
+The Chat application is based on two main programs, one server and one or more clients. To communicate between them they were created two Java RMI remote objects. The first one, to access the service and the second one to send messages and receive. 
 
-The `AccessServiceItf` is an interface that helps managing the clients that will join or leave the service. On the other hand, the `MessageServiceItf` is used to send the different type of messages and to get the history of the previous sent messages. It was also implemented a class, `MessageStorer`, to read and write messages from and to a file. This way messages can be viewed again after shutting down the server. While the server is running, messages are stored in the program memory and are updated after each message is sent. 
+The `AccessServiceItf` is an interface that helps managing the clients that will join or leave the service. On the other hand, the `MessageServiceItf` is used to send the different type of messages and to get the history of the previous sent messages. 
+
+It was also implemented a class, `MessageStorer`, to read and write messages from and to a file. This way messages can be viewed again after shutting down the server. While the server is running, messages are stored in the program memory and are updated after each message is sent. 
