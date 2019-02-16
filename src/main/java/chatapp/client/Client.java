@@ -1,8 +1,8 @@
 package chatapp.client;
 
 import chatapp.common.AccessServiceItf;
-import chatapp.common.ClientInfo_itf;
-import chatapp.common.MessageService_itf;
+import chatapp.common.ClientInfoItf;
+import chatapp.common.MessageServiceItf;
 
 import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
@@ -28,12 +28,12 @@ public class Client {
         // Get remote object reference
         Registry registry = LocateRegistry.getRegistry(host);
         AccessServiceItf accessService = (AccessServiceItf) registry.lookup("AccessService");
-        MessageService_itf msgSrvc = (MessageService_itf) registry.lookup("MessageService");
+        MessageServiceItf msgSrvc = (MessageServiceItf) registry.lookup("MessageService");
 
         System.out.println("Please select your nickname: ");
         Scanner scanner = new Scanner(System.in);
         String username = scanner.nextLine();
-        ClientInfo_itf clientInfo = new ClientInfo(username);
+        ClientInfoItf clientInfo = new ClientInfo(username);
         while (!accessService.join(clientInfo)) {
             System.out.println("Username already taken, please choose another one.");
             username = scanner.nextLine();

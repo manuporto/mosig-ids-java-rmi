@@ -1,11 +1,11 @@
 package chatapp.client;
 
-import chatapp.common.ClientInfo_itf;
+import chatapp.common.ClientInfoItf;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ClientInfo extends UnicastRemoteObject implements ClientInfo_itf {
+public class ClientInfo extends UnicastRemoteObject implements ClientInfoItf {
     String userName;
 
     public ClientInfo(String userName) throws RemoteException {

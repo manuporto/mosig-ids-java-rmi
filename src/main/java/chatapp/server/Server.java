@@ -1,7 +1,7 @@
 package chatapp.server;
 
 import chatapp.common.AccessServiceItf;
-import chatapp.common.MessageService_itf;
+import chatapp.common.MessageServiceItf;
 
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
@@ -18,8 +18,8 @@ public class Server {
         AccessServiceItf cRegisterStub = (AccessServiceItf) UnicastRemoteObject.exportObject(cRegister, 0);
 
         MessageStorer msgStorer = new MessageStorer();
-        MessageService_impl msgSv = new MessageService_impl(msgStorer, cRegister);
-        MessageService_itf msgStub = (MessageService_itf) UnicastRemoteObject.exportObject(msgSv, 0);
+        MessageServiceImpl msgSv = new MessageServiceImpl(msgStorer, cRegister);
+        MessageServiceItf msgStub = (MessageServiceItf) UnicastRemoteObject.exportObject(msgSv, 0);
 
         // Register the remote objects in RMI registry with a given identifier
         Registry registry = LocateRegistry.createRegistry(1099);
