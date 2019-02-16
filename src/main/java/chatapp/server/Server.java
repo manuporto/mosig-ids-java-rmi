@@ -17,7 +17,8 @@ public class Server {
         ClientRegister cRegister = new ClientRegister();
         AccessServiceItf cRegisterStub = (AccessServiceItf) UnicastRemoteObject.exportObject(cRegister, 0);
 
-        MessageStorer msgStorer = new MessageStorer();
+        MessageStorer msgStorer = new MessageStorer("./broadcastMessages.backup",
+                "./directMessages.backup");
         MessageServiceImpl msgSv = new MessageServiceImpl(msgStorer, cRegister);
         MessageServiceItf msgStub = (MessageServiceItf) UnicastRemoteObject.exportObject(msgSv, 0);
 
