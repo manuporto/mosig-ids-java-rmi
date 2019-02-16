@@ -61,6 +61,7 @@ public class MessageStorer implements Runnable {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {
+            System.out.println("Interrupted");
             receivedMessages.drainTo(oldMessages);
             saveMessages();
         }
