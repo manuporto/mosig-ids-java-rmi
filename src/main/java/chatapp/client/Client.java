@@ -10,8 +10,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,31 +39,8 @@ public class Client {
         }
 
         // Remote method invocation
-        System.out.println("Type the message below. For exit type /exit");
-        String message = scanner.nextLine();
-        while (!message.equals("/exit")) {
-            List<String> command = Arrays.asList(message.split(" "));
-            switch (command.get(0)) {
-                case "/msg":
-                    msgSrvc.sendMessage(clientInfo.getUsername(), command.get(1), command.get(2));
-                    break;
-                case "/bmsg":
-                    msgSrvc.sendBroadcastMessage(clientInfo.getUsername(), command.get(1));
-                    break;
-                case "/clients":
-                    Iterable<String> clients = accessService.getConnectedClients();
-                    System.out.println("Connected clients: ");
-                    for (String client : clients) System.out.println(client);
-                    break;
-                case "/history":
-                    System.out.println("Not implemented!");
-                    break;
-                default:
-                    System.out.println("Command not recognized.");
-                    System.out.println("List of comannds....");
-            }
-            message = scanner.nextLine();
-        }
+        ChatInterface chat = new ChatInterface(clientInfo.getUsername(), accessService, msgSrvc);
+        chat.run();
 
         scanner.close();
         try {
