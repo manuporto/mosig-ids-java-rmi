@@ -1,62 +1,66 @@
 package chatapp.server;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MessageStorer implements Runnable{
-    File file;
-    private FileOutputStream fos;
-    private ObjectOutputStream oos;
-    private FileInputStream fis;
-    private ObjectInputStream ois;
-    private final BlockingQueue<Message> receivedMessages;
-    private List<Message> messages;
+public class MessageStorer {
+    private List<Message> oldMessages;
 
-    MessageStorer(BlockingQueue<Message> receivedMessages) throws FileNotFoundException, IOException, ClassNotFoundException {
-        file = new File("/Users/admin/Desktop/mosig-ids-java-rmi/src/main/java/chatapp/common/History.txt");
-        // if file doesnt exists, then we create it
-        if (!file.exists()) {
-        file.createNewFile();
-			}
-        fis = new FileInputStream(file);
-        ois = new ObjectInputStream(fis);
-        messages = (LinkedList) ois.readObject();
-        ois.close();
-        this.receivedMessages = receivedMessages;
-        fos = new FileOutputStream(file);
-        oos = new ObjectOutputStream(fos);
+    MessageStorer() throws IOException {
+        oldMessages = new LinkedList<>();
+        loadMessages();
     }
 
-    @Override
-    public void run() {
-        try {
-            Message msg;
-            while (!Thread.currentThread().isInterrupted()) {
-                msg = receivedMessages.take();
-                messages.add(msg);
+    private void loadMessages() throws IOException {
+        File file = new File("./history");
+        if (!file.createNewFile()) {
+            FileInputStream fis = new FileInputStream(file);
+            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+                Message msg;
+                while (fis.available() != 0) {
+                    msg = (Message) ois.readObject();
+                    oldMessages.add(msg);
+                }
+                for (Message oldMessage : oldMessages) {
+                    Message message;
+                    message = oldMessage;
+                    System.out.println(message.toString());
+                }
+            } catch (EOFException e) {
+                Logger.getLogger(MessageStorer.class.getName()).log(Level.INFO, "History file empty");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                Logger.getLogger(MessageStorer.class.getName()).log(Level.SEVERE, e.toString(), e);
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            final List<Message> remainingMsgs = new LinkedList<>();
-            receivedMessages.drainTo(remainingMsgs);
-            messages.addAll(remainingMsgs);
-            try {
-                oos.writeObject(messages);
-                oos.close();
-            } catch (IOException ex) {
-                Logger.getLogger(MessageStorer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
         }
+    }
+
+
+    private void saveMessages() {
+        try {
+            File file = new File("./history");
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            for (Message msg : oldMessages) oos.writeObject(msg);
+            oos.close();
+            fos.close();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageStorer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void addMessage(Message msg) {
+        oldMessages.add(msg);
+    }
+
+    public List<Message> getMessages() {
+        return oldMessages;
+    }
+
+    public void close() {
+        saveMessages();
     }
 }
