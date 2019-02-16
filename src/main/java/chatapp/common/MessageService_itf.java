@@ -10,7 +10,5 @@ public interface MessageService_itf  extends Remote {
 
     void sendBroadcastMessage(String senderUsername, String message) throws RemoteException;
 
-    ArrayList<String> receiveMessages() throws RemoteException;
-
-    ArrayList<String> getClients() throws RemoteException;
+    ArrayList<String> getMessageHistory() throws RemoteException;
 }

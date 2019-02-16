@@ -4,6 +4,7 @@ import chatapp.common.AccessServiceItf;
 import chatapp.common.ClientInfo_itf;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,18 +16,23 @@ public class ClientRegister implements AccessServiceItf {
         clients = new HashMap<>();
     }
 
-    public void join(ClientInfo_itf client) throws RemoteException {
-        // TODO throw exception if it already exists an user with that name
+    @Override
+    public synchronized Boolean join(ClientInfo_itf client) throws RemoteException {
+        if (clients.containsKey(client.getUsername())) return false;
         clients.put(client.getUsername(), client);
+        return true;
     }
 
-    public void leave(ClientInfo_itf client) throws RemoteException {
+    @Override
+    public synchronized void leave(ClientInfo_itf client) throws RemoteException {
         clients.remove(client.getUsername());
     }
 
     @Override
-    public Boolean userNameAvailable(String userName) throws RemoteException {
-        return !clients.containsKey(userName);
+    public ArrayList<String> getConnectedClients() throws RemoteException {
+        ArrayList<String> clientsArray = new ArrayList<>();
+        clientsArray.addAll(clients.keySet());
+        return clientsArray;
     }
 
     public Iterable<ClientInfo_itf> getClients() {

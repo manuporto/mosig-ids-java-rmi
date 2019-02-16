@@ -1,20 +1,16 @@
 package chatapp.server;
 
 import java.io.*;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MessageStorer implements Runnable {
-    private final BlockingQueue<Message> receivedMessages;
+public class MessageStorer {
     private List<Message> oldMessages;
 
-    MessageStorer(BlockingQueue<Message> receivedMessages) throws IOException {
+    MessageStorer() throws IOException {
         oldMessages = new LinkedList<>();
-        this.receivedMessages = receivedMessages;
         loadMessages();
     }
 
@@ -28,9 +24,9 @@ public class MessageStorer implements Runnable {
                     msg = (Message) ois.readObject();
                     oldMessages.add(msg);
                 }
-                for (Iterator<Message> it = oldMessages.iterator(); it.hasNext();) {
+                for (Message oldMessage : oldMessages) {
                     Message message;
-                    message = it.next();
+                    message = oldMessage;
                     System.out.println(message.toString());
                 }
             } catch (EOFException e) {
@@ -56,20 +52,15 @@ public class MessageStorer implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        try {
-            Message msg;
-            while (!Thread.currentThread().isInterrupted()) {
-                msg = receivedMessages.take();
-                oldMessages.add(msg);
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            System.out.println("Interrupted");
-            receivedMessages.drainTo(oldMessages);
-            saveMessages();
-        }
+    public void addMessage(Message msg) {
+        oldMessages.add(msg);
+    }
+
+    public List<Message> getMessages() {
+        return oldMessages;
+    }
+
+    public void close() {
+        saveMessages();
     }
 }

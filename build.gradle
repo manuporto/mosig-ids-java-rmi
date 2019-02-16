@@ -31,7 +31,6 @@ dependencies {
 task runServer(type: JavaExec) {
     main = 'chatapp.server.Server'
     classpath = sourceSets.main.runtimeClasspath
-    args 'localhost'
     standardInput System.in
 }
 

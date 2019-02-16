@@ -22,4 +22,8 @@ public class ClientInfo extends UnicastRemoteObject implements ClientInfo_itf {
     public void receiveMessage(String message) throws RemoteException {
         System.out.println(message);
     }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

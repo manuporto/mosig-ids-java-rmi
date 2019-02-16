@@ -33,12 +33,12 @@ public class Client {
         System.out.println("Please select your nickname: ");
         Scanner scanner = new Scanner(System.in);
         String username = scanner.nextLine();
-        while (!accessService.userNameAvailable(username)) {
+        ClientInfo_itf clientInfo = new ClientInfo(username);
+        while (!accessService.join(clientInfo)) {
             System.out.println("Username already taken, please choose another one.");
             username = scanner.nextLine();
+            ((ClientInfo) clientInfo).setUserName(username);
         }
-        ClientInfo_itf clientInfo = new ClientInfo(username);
-        accessService.join(clientInfo);
 
         // Remote method invocation
         System.out.println("Type the message below. For exit type /exit");
@@ -53,7 +53,7 @@ public class Client {
                     msgSrvc.sendBroadcastMessage(clientInfo.getUsername(), command.get(1));
                     break;
                 case "/clients":
-                    Iterable<String> clients = msgSrvc.getClients();
+                    Iterable<String> clients = accessService.getConnectedClients();
                     System.out.println("Connected clients: ");
                     for (String client : clients) System.out.println(client);
                     break;
@@ -70,8 +70,6 @@ public class Client {
         scanner.close();
         try {
             accessService.leave(clientInfo);
-            registry.unbind("AccessService");
-            registry.unbind("MessageService");
             UnicastRemoteObject.unexportObject(clientInfo, true);
         } catch (ConnectException e) {
             Logger.getLogger(Client.class.getName()).log(Level.INFO, "Server already closed");
