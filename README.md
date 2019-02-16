@@ -1,14 +1,18 @@
-# Java RMI Project Assignment: Chat Application
+# Universite Grenoble Alpes
+## Master of Sciences in Informatics at Grenoble
+## Introduction to Distributed Systems
+### Java RMI Project Assignment: Chat Application
+---
 
-## Participants 
+### Participants 
 * Peter BARDAWIL - peter.bardawil@grenoble-inp.org
 * Manuel PORTO - manuel-ignacio.porto@grenoble-inp.org
 
-## How To Compile
+### How To Compile
 
 In the terminal, run the command `./gradlew build`.
 
-## How To Run
+### How To Run
 1. To run the server, the command will be `./gradlew -q --console=plain runServer`.
 2. To run a client, the command will be `./gradlew -q --console=plain runClient`.
 
@@ -22,7 +26,7 @@ From the client side, there exist different commands to achieve several things. 
 
 From the server side the only possible interaction if for closing it with the letter **Q**.
 
-## Design
+### Design
 
 The Chat application is based on two main programs, one server and one or more clients. To communicate between them they were created two Java RMI remote objects. The first one, to access the service and the second one to send messages and receive. 
 
