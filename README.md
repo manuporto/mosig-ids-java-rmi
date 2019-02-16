@@ -6,7 +6,7 @@
 
 ## How To Compile
 
-In the terminal, run the command `./gradlew.build`.
+In the terminal, run the command `./gradlew build`.
 
 ## How To Run
 1. To run the server, the command will be `./gradlew -q --console=plain runServer`.
